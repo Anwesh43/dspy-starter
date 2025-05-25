@@ -1,1 +1,2 @@
 .env
+dspy_starter/signatures/__pycache__/*

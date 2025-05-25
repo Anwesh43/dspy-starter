@@ -1,6 +1,9 @@
 import dspy
 from dotenv import load_dotenv
 import os
+from signatures.classify import Classify
+import sys
+from utils.command_parser import CommandParser
 
 load_dotenv()
 
@@ -12,7 +15,7 @@ class DspyWrapper:
         dspy.configure(lm=self.llm)
 
     def setupSignature(self):
-        self.classify = dspy.Predict('sentence -> sentiment:bool')
+        self.classify = dspy.Predict(Classify)
 
     def classifySentence(self, word: str):
         response = self.classify(sentence=word)
@@ -21,5 +24,8 @@ class DspyWrapper:
 
 dspyWrapper = DspyWrapper('openai/gpt-4o-mini')
 dspyWrapper.setupSignature()
-print(dspyWrapper.classifySentence(
-    "it's a charming and often affecting journey."))
+
+commandParser = CommandParser()
+if commandParser.isEnoughArgs():
+    print("Sentence", commandParser.getSentence())
+    print(dspyWrapper.classifySentence(commandParser.getSentence()))
